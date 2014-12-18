@@ -10,7 +10,7 @@ gpg -a --export 6FB2A1C265FFB764 | apt-key add -
 apt-get update
 
 # needed for everything
-apt-get install -y make cmake pkg-config openvas-server
+apt-get install -y make cmake pkg-config
 
 # requirements for openvas-libraries (and possibly others)
 apt-get install -y libssh-dev libgnutls-dev libglib2.0-dev libpcap-dev libgpgme11-dev uuid-dev bison libksba-dev
