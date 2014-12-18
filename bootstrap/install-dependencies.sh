@@ -18,5 +18,8 @@ apt-get install -y libssh-dev libgnutls-dev libglib2.0-dev libpcap-dev libgpgme1
 # requirements for openvas-manager (and possibly others)
 apt-get install -y libsqlite3-dev
 
+# requirements for openvas-scanner (and possibly others)
+apt-get install -y libopenvas2
+
 # requirements for greenbone-security-assistant (and possibly others)
 apt-get install -y xsltproc libxml2-dev libxslt1-dev libmicrohttpd-dev=0.9.20-1+deb7u1
