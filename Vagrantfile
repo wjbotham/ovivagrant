@@ -16,5 +16,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :path => "bootstrap/build-greenbone-security-assistant.sh"
   config.vm.provision :shell, :path => "bootstrap/build-openvas-cli.sh"
   config.vm.provision :shell, :path => "bootstrap/setup.sh"
-  #config.vm.network "forwarded_port", guest: 9393, host: 9393
+  config.vm.provision :shell, :path => "bootstrap/start.sh"
+  config.vm.network "forwarded_port", guest: 443, host: 9392
 end
