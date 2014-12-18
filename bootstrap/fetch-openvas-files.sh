@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd
+cd /home/vagrant
 
 wget http://wald.intevation.org/frs/download.php/1833/openvas-libraries-7.0.6.tar.gz
 wget http://wald.intevation.org/frs/download.php/1844/openvas-scanner-4.0.5.tar.gz
@@ -16,5 +16,6 @@ do
   CURRENT_SHA=$(openssl dgst -sha1 $TARGET_FILE | awk '{print $2}')
   [ "$ORIGINAL_SHA" != "$CURRENT_SHA" ] && { echo "ERROR: $SHA_FILE did not match SHA1 of $TARGET_FILE!"; exit 1; }
   tar xzf $TARGET_FILE
+  rm $TARGET_FILE
 done
 echo "!!!!!! All SHA1 fields matched !!!!!!"

@@ -8,11 +8,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider "virtualbox"
   config.vm.box = "hashicorp/precise64"
 
+  config.vm.provision :shell, :path => "bootstrap/install-dependencies.sh"
   config.vm.provision :shell, :path => "bootstrap/fetch-openvas-files.sh"
-  #config.vm.provision :shell, :path => "bootstrap/build-openvas-libraries.sh"
-  #config.vm.provision :shell, :path => "bootstrap/build-openvas-scanner.sh"
-  #config.vm.provision :shell, :path => "bootstrap/build-openvas-manager.sh"
-  #config.vm.provision :shell, :path => "bootstrap/build-greenbone-security-assistant.sh"
-  #config.vm.provision :shell, :path => "bootstrap/build-openvas-cli.sh"
-  config.vm.network "forwarded_port", guest: 9393, host: 9393
+  config.vm.provision :shell, :path => "bootstrap/build-openvas-libraries.sh"
+  config.vm.provision :shell, :path => "bootstrap/build-openvas-scanner.sh"
+  config.vm.provision :shell, :path => "bootstrap/build-openvas-manager.sh"
+  config.vm.provision :shell, :path => "bootstrap/build-greenbone-security-assistant.sh"
+  config.vm.provision :shell, :path => "bootstrap/build-openvas-cli.sh"
+  #config.vm.network "forwarded_port", guest: 9393, host: 9393
 end
