@@ -14,7 +14,7 @@ do
   ORIGINAL_SHA=$(awk '{print $1}' $SHA_FILE)
   TARGET_FILE=$(awk '{print $2}' $SHA_FILE)
   CURRENT_SHA=$(openssl dgst -sha1 $TARGET_FILE | awk '{print $2}')
-  [ "$ORIGINAL_SHA" != "$CURRENT_SHA" ] && { echo "$SHA_FILE did not match SHA1 of $TARGET_FILE!"; exit 1; }
+  [ "$ORIGINAL_SHA" != "$CURRENT_SHA" ] && { echo "ERROR: $SHA_FILE did not match SHA1 of $TARGET_FILE!"; exit 1; }
   tar xzf $TARGET_FILE
 done
 echo "!!!!!! All SHA1 fields matched !!!!!!"
