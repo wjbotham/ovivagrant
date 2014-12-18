@@ -19,4 +19,4 @@ apt-get install -y libssh-dev libgnutls-dev libglib2.0-dev libpcap-dev libgpgme1
 apt-get install -y libsqlite3-dev
 
 # requirements for greenbone-security-assistant (and possibly others)
-apt-get install -y libxml2-dev libxslt1-dev libmicrohttpd-dev=0.9.20-1+deb7u1
+apt-get install -y xsltproc libxml2-dev libxslt1-dev libmicrohttpd-dev=0.9.20-1+deb7u1
