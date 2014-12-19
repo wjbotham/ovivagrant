@@ -1,12 +1,13 @@
 #!/bin/bash
 
 OPENVAS_DIR=/usr/local/var/lib/openvas
+VAG_DIR=/vagrant
 NVT=$OPENVAS_DIR/plugins
-NVT_TAR=nvt-feed-backup.tar.gz
+NVT_TAR=$VAG_DIR/nvt-feed-backup.tar.gz
 SCAP=$OPENVAS_DIR/scap-data
-SCAP_TAR=scap-feed-backup.tar.gz
+SCAP_TAR=$VAG_DIR/scap-feed-backup.tar.gz
 CERT=$OPENVAS_DIR/cert-data
-CERT_TAR=cert-feed-backup.tar.gz
+CERT_TAR=$VAG_DIR/vagrant/cert-feed-backup.tar.gz
 
 if [ "$1" = "restore" ]
 then
@@ -15,15 +16,18 @@ then
   # for that feed, then we give it to OpenVAS.
   if [[ -f $NVT_TAR && ! -d $NVT ]]
   then
-    tar -zxf $NVT_TAR -C /
+    echo "Restoring NVT..."
+    tar -zxvf $NVT_TAR -C /
   fi
   if [[ -f $SCAP_TAR && ! -d $SCAP ]]
   then
-    tar -zxf $SCAP_TAR -C /
+    echo "Restoring SCAP..."
+    tar -zxvf $SCAP_TAR -C /
   fi
   if [[ -f $CERT_TAR && ! -d $CERT ]]
   then
-    tar -zxf $CERT_TAR -C /
+    echo "Restoring CERT..."
+    tar -zxvf $CERT_TAR -C /
   fi
 elif [ "$1" = "save" ]
 then
