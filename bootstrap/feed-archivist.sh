@@ -32,9 +32,9 @@ then
 elif [ "$1" = "save" ]
 then
   echo "Archiving and compressing the updated feed data..."
-  { time tar -zcvf $NVT_TAR  $NVT  ; } 2> nvt_tar_time.log
-  { time tar -zcvf $SCAP_TAR $SCAP ; } 2> scap_tar_time.log
-  { time tar -zcvf $CERT_TAR $CERT ; } 2> cert_tar_time.log
+  tar -zcf $NVT_TAR $NVT
+  tar -zcf $SCAP_TAR $SCAP
+  tar -zcf $CERT_TAR $CERT
 else
   echo "Feed archive script does not recognize this argument: $1"
 fi
