@@ -6,6 +6,23 @@ echo '# It gives access to a later version of libmicrohttpd-dev.' >> /etc/apt/so
 echo 'deb http://ftp.de.debian.org/debian wheezy main' >> /etc/apt/sources.list
 gpg --keyserver keys.gnupg.net --recv-keys 6FB2A1C265FFB764
 gpg -a --export 6FB2A1C265FFB764 | apt-key add -
+# TODO
+# Verify that the key was retrieved and exported. I saw it fail once with this
+# output:
+#
+# gpg: directory `/root/.gnupg' created
+# gpg: new configuration file `/root/.gnupg/gpg.conf' created
+# gpg: WARNING: options in `/root/.gnupg/gpg.conf' are not yet active during this run
+# gpg: keyring `/root/.gnupg/secring.gpg' created
+# gpg: keyring `/root/.gnupg/pubring.gpg' created
+# gpg: requesting key 65FFB764 from hkp server keys.gnupg.net
+# gpgkeys: key 6FB2A1C265FFB764 not found on keyserver
+# gpg: no valid OpenPGP data found.
+# gpg: Total number processed: 0
+# gpg: WARNING: nothing exported
+# gpg: no valid OpenPGP data found.
+#
+# TODO
 
 apt-get update
 
