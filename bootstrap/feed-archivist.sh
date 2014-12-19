@@ -25,6 +25,11 @@ then
 elif [ "$1" = "save" ]
 then
   echo "Archiving and compressing the updated feed data..."
+  if [[ ! -d $NVT/private ]]
+  then
+    mkdir $NVT/private
+  fi
+  echo "This file is here to make sure this directory survives being archived! If this directory doesn't exist, certain parts of the openvas-check-status script get confused about which OpenVAS version we're going for." > $NVT/private/keeping-the-door-open.txt
   { time tar -zcf $NVT_TAR  $NVT  ; } 2> /vagrant/nvt_tar_time.log
   { time tar -zcf $SCAP_TAR $SCAP ; } 2> /vagrant/scap_tar_time.log
 else
