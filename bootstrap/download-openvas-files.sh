@@ -1,6 +1,10 @@
 #!/bin/bash
 
-cd /vagrant
+if [ ! -d /vagrant/downloads ]
+then
+  mkdir /vagrant/downloads
+fi
+cd /vagrant/downloads
 
 if [ ! -f openvas-libraries-7.0.6.tar.gz ]
 then
