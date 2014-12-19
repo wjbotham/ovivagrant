@@ -14,7 +14,7 @@ then
   echo "Checking for feed data to restore from archive..."
   # If OpenVAS is missing data for one of the three feeds and we have an archive
   # for that feed, then we give it to OpenVAS.
-  if [[ -f $NVT_TAR && ! -d $NVT ]]
+  if [[ -f $NVT_TAR && -f $NVT/plugin_feed_info.inc ]]
   then
     echo "Restoring NVT..."
     tar -zxvf $NVT_TAR -C /
@@ -32,9 +32,9 @@ then
 elif [ "$1" = "save" ]
 then
   echo "Archiving and compressing the updated feed data..."
-  tar -zcf $NVT_TAR $NVT
-  tar -zcf $SCAP_TAR $SCAP
-  tar -zcf $CERT_TAR $CERT
+  { time tar -zcvf $NVT_TAR  $NVT  ; } 2> nvt_tar_time.log
+  { time tar -zcvf $SCAP_TAR $SCAP ; } 2> scap_tar_time.log
+  { time tar -zcvf $CERT_TAR $CERT ; } 2> cert_tar_time.log
 else
   echo "Feed archive script does not recognize this argument: $1"
 fi
