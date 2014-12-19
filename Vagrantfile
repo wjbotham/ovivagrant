@@ -20,5 +20,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :path => "bootstrap/setup.sh"
   config.vm.provision :shell, :path => "bootstrap/feed-archivist.sh", :args => "save"
   #config.vm.provision :shell, :path => "bootstrap/create-admin-password.sh"
+  config.vm.provision :shell, :path => "bootstrap/report.sh"
   config.vm.network "forwarded_port", guest: 443, host: 9392
 end
