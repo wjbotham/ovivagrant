@@ -1,10 +1,11 @@
 #!/bin/bash
 
-NVT=/usr/local/var/lib/openvas/plugins
+OPENVAS_DIR=/usr/local/var/lib/openvas
+NVT=$OPENVAS_DIR/plugins
 NVT_TAR=nvt-feed-backup.tar.gz
-SCAP=/usr/local/var/lib/openvas/scap-data
+SCAP=$OPENVAS_DIR/scap-data
 SCAP_TAR=scap-feed-backup.tar.gz
-CERT=/usr/local/var/lib/openvas/cert-data
+CERT=$OPENVAS_DIR/cert-data
 CERT_TAR=cert-feed-backup.tar.gz
 
 if [ "$1" = "restore" ]
@@ -14,22 +15,22 @@ then
   # for that feed, then we give it to OpenVAS.
   if [[ -f $NVT_TAR && ! -d $NVT ]]
   then
-    tar -zxvf $NVT_TAR -C $NVT
+    tar -zxf $NVT_TAR -C /
   fi
   if [[ -f $SCAP_TAR && ! -d $SCAP ]]
   then
-    tar -zxvf $SCAP_TAR -C $SCAP
+    tar -zxf $SCAP_TAR -C /
   fi
   if [[ -f $CERT_TAR && ! -d $CERT ]]
   then
-    tar -zxvf $CERT_TAR -C $CERT
+    tar -zxf $CERT_TAR -C /
   fi
 elif [ "$1" = "save" ]
 then
   echo "Archiving and compressing the updated feed data..."
-  tar -zcvf $NVT_TAR $NVT
-  tar -zcvf $SCAP_TAR $SCAP
-  tar -zcvf $CERT_TAR $CERT
+  tar -zcf $NVT_TAR $NVT
+  tar -zcf $SCAP_TAR $SCAP
+  tar -zcf $CERT_TAR $CERT
 else
   echo "Feed archive script does not recognize this argument: $1"
 fi
