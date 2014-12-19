@@ -1,11 +1,11 @@
 #!/bin/bash
 
 OPENVAS_DIR=/usr/local/var/lib/openvas
-VAG_DIR=/vagrant
+ARCHIVE_DIR=/vagrant/archives
 NVT=$OPENVAS_DIR/plugins
-NVT_TAR=$VAG_DIR/nvt-feed-backup.tar.gz
+NVT_TAR=$ARCHIVE_DIR/nvt-feed.tar.gz
 SCAP=$OPENVAS_DIR/scap-data
-SCAP_TAR=$VAG_DIR/scap-feed-backup.tar.gz
+SCAP_TAR=$ARCHIVE_DIR/scap-feed.tar.gz
 
 if [ "$1" = "restore" ]
 then
