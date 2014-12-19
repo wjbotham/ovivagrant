@@ -2,6 +2,10 @@
 
 OPENVAS_DIR=/usr/local/var/lib/openvas
 ARCHIVE_DIR=/vagrant/archives
+if [ ! -d $ARCHIVE_DIR ]
+then
+  mkdir $ARCHIVE_DIR
+fi
 NVT=$OPENVAS_DIR/plugins
 NVT_TAR=$ARCHIVE_DIR/nvt-feed.tar.gz
 SCAP=$OPENVAS_DIR/scap-data
@@ -10,7 +14,7 @@ SCAP_TAR=$ARCHIVE_DIR/scap-feed.tar.gz
 if [ "$1" = "restore" ]
 then
   echo "Checking for feed data to restore from archive..."
-  # If OpenVAS is missing data for one of the three feeds and we have an archive
+  # If OpenVAS is missing data for one of the two feeds and we have an archive
   # for that feed, then we give it to OpenVAS.
   if [[ -f $NVT_TAR && ! -f $NVT/plugin_feed_info.inc ]]
   then
