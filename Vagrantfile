@@ -21,11 +21,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :path => "bootstrap/build-openvas-manager.sh"
   config.vm.provision :shell, :path => "bootstrap/build-greenbone-security-assistant.sh"
   config.vm.provision :shell, :path => "bootstrap/build-openvas-cli.sh"
-  config.vm.provision :shell, :path => "bootstrap/start.sh"
   config.vm.provision :shell, :path => "bootstrap/feed-archivist.sh", :args => "restore"
-  config.vm.provision :shell, :path => "bootstrap/setup.sh"
+  config.vm.provision :shell, :path => "bootstrap/make-certs.sh"
+  config.vm.provision :shell, :path => "bootstrap/start-scanner.sh", :run => "always"
+  config.vm.provision :shell, :path => "bootstrap/sync.sh"
   config.vm.provision :shell, :path => "bootstrap/feed-archivist.sh", :args => "save"
-  #config.vm.provision :shell, :path => "bootstrap/create-admin-password.sh"
-  config.vm.provision :shell, :path => "bootstrap/report.sh"
+  config.vm.provision :shell, :path => "bootstrap/create-admin-password.sh"
+  config.vm.provision :shell, :path => "bootstrap/report.sh", :run => "always"
   config.vm.network "forwarded_port", guest: 443, host: 9392
 end

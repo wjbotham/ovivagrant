@@ -22,13 +22,10 @@ apt-get install -y make cmake pkg-config
 apt-get install -y libssh-dev libgnutls-dev libglib2.0-dev libpcap-dev libgpgme11-dev uuid-dev bison libksba-dev
 
 # requirements for openvas-manager (and possibly others)
-apt-get install -y libsqlite3-dev
+apt-get install -y libsqlite3-dev sqlite3
 
 # requirements for openvas-scanner (and possibly others)
 apt-get install -y libopenvas2
 
 # requirements for greenbone-security-assistant (and possibly others)
 apt-get install -y xsltproc libxml2-dev libxslt1-dev libmicrohttpd-dev=0.9.20-1+deb7u1
-
-# requirements for SCAP sync
-apt-get install -y sqlite3

@@ -6,3 +6,5 @@ mkdir build
 cd build
 cmake ..
 make install
+make rebuild_cache
+make install

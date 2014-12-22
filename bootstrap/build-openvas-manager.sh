@@ -6,5 +6,5 @@ mkdir build
 cd build
 cmake ..
 make install
-
-openvas-mkcert-client -n -i
+make rebuild_cache
+make install
