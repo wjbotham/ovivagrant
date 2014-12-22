@@ -1,3 +1,4 @@
 #!/bin/bash
 
-openvasmd
+openvasmd -v
+gsad -v

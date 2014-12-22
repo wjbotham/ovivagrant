@@ -1,3 +1,3 @@
 #!/bin/bash
 
-openvasmd --rebuild --progress
+openvasmd --rebuild
