@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/vagrant/openvas-libraries-7.0.6/
+cd /home/vagrant/openvas-libraries-8.0.3/
 
 mkdir build
 cd build

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/vagrant/openvas-scanner-4.0.5/
+cd /home/vagrant/openvas-scanner-5.0.3/
 
 mkdir build
 cd build

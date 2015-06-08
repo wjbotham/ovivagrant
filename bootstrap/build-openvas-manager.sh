@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/vagrant/openvas-manager-5.0.7/
+cd /home/vagrant/openvas-manager-6.0.3/
 
 mkdir build
 cd build

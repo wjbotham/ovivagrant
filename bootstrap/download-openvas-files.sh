@@ -6,12 +6,16 @@ then
 fi
 cd /vagrant/downloads
 
+# These strings are the info needed to download the OpenVAS source code. The
+# first part (openvas-libraries-x.x.x) is the name of the file minus the prefix
+# (.tar.gz). The second part is a unique download ID. This will make more sense
+# you look at the wget command below.
 deps=(
-  "openvas-libraries-7.0.6|1833"
-  "openvas-scanner-4.0.5|1844"
-  "openvas-manager-5.0.7|1849"
-  "greenbone-security-assistant-5.0.4|1799"
-  "openvas-cli-1.3.1|1803"
+  "openvas-libraries-8.0.3|2067"
+  "openvas-scanner-5.0.3|2071"
+  "openvas-manager-6.0.3|2075"
+  "greenbone-security-assistant-6.0.3|2079"
+  "openvas-cli-1.4.1|2093"
 )
 for dep in ${deps[@]}
 do
@@ -19,6 +23,7 @@ do
   id=`echo $dep | cut -f 2 -d '|'`
   if [ ! -f $name.tar.gz ]
   then
+    # $id is that download ID number, mentioned above
     wget http://wald.intevation.org/frs/download.php/$id/$name.tar.gz
   fi
   ORIGINAL_SHA=$(awk '{print $1}' /vagrant/checksums/$name.tar.gz.sha1)

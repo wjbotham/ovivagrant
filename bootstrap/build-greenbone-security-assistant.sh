@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/vagrant/greenbone-security-assistant-5.0.4/
+cd /home/vagrant/greenbone-security-assistant-6.0.3/
 
 mkdir build
 cd build

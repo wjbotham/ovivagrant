@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/vagrant/openvas-cli-1.3.1/
+cd /home/vagrant/openvas-cli-1.4.1/
 
 mkdir build
 cd build
