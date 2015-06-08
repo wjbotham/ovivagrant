@@ -28,7 +28,7 @@ do
   fi
   ORIGINAL_SHA=$(awk '{print $1}' /vagrant/checksums/$name.tar.gz.sha1)
   CURRENT_SHA=$(openssl dgst -sha1 $name.tar.gz | awk '{print $2}')
-  [ "$ORIGINAL_SHA" != "$CURRENT_SHA" ] && { echo "ERROR: $name did not have matching SHA1!"; exit 1; }
+  [ "$ORIGINAL_SHA" != "$CURRENT_SHA" ] && { echo "ERROR: $name did not have matching SHA1"; exit 1; }
   tar xzf $name.tar.gz -C /home/vagrant
 done
 
