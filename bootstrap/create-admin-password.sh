@@ -1,3 +1,3 @@
 #!/bin/bash
 
-openvasmd --create-user=admin
+openvasmd --create-user=admin --role=Admin
