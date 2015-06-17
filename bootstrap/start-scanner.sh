@@ -3,6 +3,9 @@
 # needed to prevent an occasional linking error
 ldconfig
 
+redis-cli -h 127.0.0.1 -p 6379 shutdown
+redis-server /vagrant/redis.conf
+
 openvassd
 while [ `ps -aef | grep openvassd | grep "Waiting for incoming connections" | wc -l` -eq 0 ]
 do
