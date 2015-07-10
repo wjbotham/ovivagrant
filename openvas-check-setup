@@ -27,7 +27,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 
 LOG=/tmp/openvas-check-setup.log
-CHECKVERSION=2.3.0
+CHECKVERSION=2.3.1
 
 if [ "$1" = "--server" -o "$2" = "--server" ]
 then
@@ -109,7 +109,7 @@ echo "openvas-check-setup $CHECKVERSION"
 echo "  Test completeness and readiness of OpenVAS-$VER"
 if [ "$VER" = "8" ]
 then
-  echo "  (add '--v6' or '--v7' or '--9'"
+  echo "  (add '--v6' or '--v7' or '--v9'"
   echo "   if you want to check for another OpenVAS version)"
 fi
 echo ""
@@ -207,55 +207,6 @@ echo "" >> $LOG
 
 log_and_print "OK: OpenVAS Scanner CA Certificate is present as $CAFILE."
 
-echo "Checking NVT collection ..." >> $LOG
-PLUGINSFOLDER=`openvassd -s 2>>$LOG | grep plugins_folder | sed -e "s/^plugins_folder = //"`
-if [ ! -d $PLUGINSFOLDER ]
-then
-  log_and_print "ERROR: Directory containing the NVT collection not found."
-  log_and_print "FIX: Run a NVT synchronization script like openvas-nvt-sync or greenbone-nvt-sync."
-  check_failed
-fi
-OLDPLUGINSFOLDER=`echo "$PLUGINSFOLDER" | grep -q -v "/var/" 2>&1`
-if [ $? -eq 0 ]
-then
-  CONFFILE=`openvassd -s 2>>$LOG | grep config_file | sed -e "s/^config_file = //"`
-  log_and_print "ERROR: Your OpenVAS Scanner configuration seems to be from a pre-OpenVAS-4 installation and contains non-FHS compliant paths."
-  log_and_print "FIX: Delete your OpenVAS Scanner Configuration file ($CONFFILE)."
-  check_failed
-fi
-NVTCOUNT=`find $PLUGINSFOLDER -name "*nasl" | wc -l`
-if [ $NVTCOUNT -lt 10 ]
-then
-  log_and_print "ERROR: The NVT collection is very small."
-  log_and_print "FIX: Run a synchronization script like openvas-nvt-sync or greenbone-nvt-sync."
-  check_failed
-fi
-echo "" >> $LOG
-
-log_and_print "OK: NVT collection in $PLUGINSFOLDER contains $NVTCOUNT NVTs."
-
-echo "Checking status of signature checking in OpenVAS Scanner ..." >> $LOG
-NOSIGCHECK=`openvassd -s 2>>$LOG | grep nasl_no_signature_check | sed -e "s/^nasl_no_signature_check = //"`
-if [ $NOSIGCHECK != "no" ]
-then
-  log_and_print "WARNING: Signature checking of NVTs is not enabled in OpenVAS Scanner."
-  log_and_print "SUGGEST: Enable signature checking (see http://www.openvas.org/trusted-nvts.html)."
-else
-  log_and_print "OK: Signature checking of NVTs is enabled in OpenVAS Scanner."
-fi
-echo "" >> $LOG
-
-CACHEFOLDER=`openvassd -s 2>>$LOG | grep cache_folder | sed -e "s/^cache_folder = //"`
-CACHECOUNT=`find $CACHEFOLDER -name "*nvti" | wc -l`
-if [ $CACHECOUNT -lt $NVTCOUNT ]
-then
-  log_and_print "WARNING: The initial NVT cache has not yet been generated."
-  log_and_print "SUGGEST: Start OpenVAS Scanner for the first time to generate the cache."
-else
-  log_and_print "OK: The NVT cache in $CACHEFOLDER contains $CACHECOUNT files for $NVTCOUNT NVTs."
-fi
-echo "" >> $LOG
-
 if [ "$VER" -ge 8 ]
 then
   echo "Checking presence of redis ..." >> $LOG
@@ -304,6 +255,54 @@ then
   echo "" >> $LOG
 fi
 
+echo "Checking NVT collection ..." >> $LOG
+PLUGINSFOLDER=`openvassd -s 2>>$LOG | grep plugins_folder | sed -e "s/^plugins_folder = //"`
+if [ ! -d $PLUGINSFOLDER ]
+then
+  log_and_print "ERROR: Directory containing the NVT collection not found."
+  log_and_print "FIX: Run a NVT synchronization script like openvas-nvt-sync or greenbone-nvt-sync."
+  check_failed
+fi
+OLDPLUGINSFOLDER=`echo "$PLUGINSFOLDER" | grep -q -v "/var/" 2>&1`
+if [ $? -eq 0 ]
+then
+  CONFFILE=`openvassd -s 2>>$LOG | grep config_file | sed -e "s/^config_file = //"`
+  log_and_print "ERROR: Your OpenVAS Scanner configuration seems to be from a pre-OpenVAS-4 installation and contains non-FHS compliant paths."
+  log_and_print "FIX: Delete your OpenVAS Scanner Configuration file ($CONFFILE)."
+  check_failed
+fi
+NVTCOUNT=`find $PLUGINSFOLDER -name "*nasl" | wc -l`
+if [ $NVTCOUNT -lt 10 ]
+then
+  log_and_print "ERROR: The NVT collection is very small."
+  log_and_print "FIX: Run a synchronization script like openvas-nvt-sync or greenbone-nvt-sync."
+  check_failed
+fi
+echo "" >> $LOG
+
+log_and_print "OK: NVT collection in $PLUGINSFOLDER contains $NVTCOUNT NVTs."
+
+echo "Checking status of signature checking in OpenVAS Scanner ..." >> $LOG
+NOSIGCHECK=`openvassd -s 2>>$LOG | grep nasl_no_signature_check | sed -e "s/^nasl_no_signature_check = //"`
+if [ $NOSIGCHECK != "no" ]
+then
+  log_and_print "WARNING: Signature checking of NVTs is not enabled in OpenVAS Scanner."
+  log_and_print "SUGGEST: Enable signature checking (see http://www.openvas.org/trusted-nvts.html)."
+else
+  log_and_print "OK: Signature checking of NVTs is enabled in OpenVAS Scanner."
+fi
+echo "" >> $LOG
+
+CACHEFOLDER=`openvassd -s 2>>$LOG | grep cache_folder | sed -e "s/^cache_folder = //"`
+CACHECOUNT=`find $CACHEFOLDER -name "*nvti" | wc -l`
+if [ $CACHECOUNT -lt $NVTCOUNT ]
+then
+  log_and_print "WARNING: The initial NVT cache has not yet been generated."
+  log_and_print "SUGGEST: Start OpenVAS Scanner for the first time to generate the cache."
+else
+  log_and_print "OK: The NVT cache in $CACHEFOLDER contains $CACHECOUNT files for $NVTCOUNT NVTs."
+fi
+echo "" >> $LOG
 
 echo "Step 2: Checking OpenVAS Manager ... "
 
@@ -699,18 +698,18 @@ echo "" >> $LOG
 
 if [ $HAVE_NETSTAT -eq 1 ]
 then
-  netstat -A inet -ntlp 2> /dev/null >> $LOG
-  OPENVASSD_HOST=`netstat -A inet -ntlp 2> /dev/null | grep openvassd | awk -F\  '{print $4}' | awk -F: '{print $1}'`
-  OPENVASSD_PORT=`netstat -A inet -ntlp 2> /dev/null | grep openvassd | awk -F\  '{print $4}' | awk -F: '{print $2}'`
-  OPENVASMD_HOST=`netstat -A inet -ntlp 2> /dev/null | grep openvasmd | awk -F\  '{print $4}' | awk -F: '{print $1}'`
-  OPENVASMD_PORT=`netstat -A inet -ntlp 2> /dev/null | grep openvasmd | awk -F\  '{print $4}' | awk -F: '{print $2}'`
-  OPENVASAD_HOST=`netstat -A inet -ntlp 2> /dev/null | grep openvasad | awk -F\  '{print $4}' | awk -F: '{print $1}'`
-  OPENVASAD_PORT=`netstat -A inet -ntlp 2> /dev/null | grep openvasad | awk -F\  '{print $4}' | awk -F: '{print $2}'`
-  GSAD_HOST=`netstat -A inet -ntlp 2> /dev/null | grep gsad | awk -F\  '{print $4}' | awk -F: '{print $1}'`
-  GSAD_PORT=`netstat -A inet -ntlp 2> /dev/null | grep gsad | awk -F\  '{print $4}' | awk -F: '{print $2}'`
+  netstat -A inet -A inet6 -ntlp 2> /dev/null >> $LOG
+  OPENVASSD_HOST=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep openvassd | awk -F\  '{print $4}' | awk -F: 'sub(FS $NF,x)'`
+  OPENVASSD_PORT=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep openvassd | awk -F\  '{print $4}' | awk -F: '{print $NF}'`
+  OPENVASMD_HOST=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep openvasmd | awk -F\  '{print $4}' | awk -F: 'sub(FS $NF,x)'`
+  OPENVASMD_PORT=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep openvasmd | awk -F\  '{print $4}' | awk -F: '{print $NF}'`
+  OPENVASAD_HOST=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep openvasad | awk -F\  '{print $4}' | awk -F: 'sub(FS $NF,x)'`
+  OPENVASAD_PORT=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep openvasad | awk -F\  '{print $4}' | awk -F: '{print $NF}'`
+  GSAD_HOST=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep gsad | awk -F\  '{print $4}' | awk -F: 'sub(FS $NF,x)'`
+  GSAD_PORT=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep gsad | awk -F\  '{print $4}' | awk -F: '{print $NF}'`
 
   case "$OPENVASSD_HOST" in
-    "0.0.0.0") log_and_print "OK: OpenVAS Scanner is running and listening on all interfaces." ;;
+    "0.0.0.0"|"::") log_and_print "OK: OpenVAS Scanner is running and listening on all interfaces." ;;
     "127.0.0.1") log_and_print "OK: OpenVAS Scanner is running and listening only on the local interface." ;;
     "") OPENVASSD_PROC=`ps -Af | grep "openvassd: waiting for incoming connections" | grep -v grep | wc -l`
         if [ $OPENVASSD_PROC -eq 0 ]
@@ -734,7 +733,7 @@ then
   esac
 
   case "$OPENVASMD_HOST" in
-    "0.0.0.0") log_and_print "OK: OpenVAS Manager is running and listening on all interfaces." ;;
+    "0.0.0.0"|"::") log_and_print "OK: OpenVAS Manager is running and listening on all interfaces." ;;
     "127.0.0.1") log_and_print "WARNING: OpenVAS Manager is running and listening only on the local interface."
                  log_and_print "This means that you will not be able to access the OpenVAS Manager from the"
                  log_and_print "outside using GSD or OpenVAS CLI."
@@ -771,7 +770,7 @@ then
   fi
 
   case "$GSAD_HOST" in
-    "0.0.0.0") log_and_print "OK: Greenbone Security Assistant is running and listening on all interfaces." ;;
+    "0.0.0.0"|"::") log_and_print "OK: Greenbone Security Assistant is running and listening on all interfaces." ;;
     "127.0.0.1") log_and_print "WARNING: Greenbone Security Assistant is running and listening only on the local interface."
                  log_and_print "This means that you will not be able to access the Greenbone Security Assistant from the"
                  log_and_print "outside using a web browser."
