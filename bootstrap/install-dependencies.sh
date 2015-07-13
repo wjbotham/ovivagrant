@@ -29,6 +29,7 @@ apt-get install -y libsqlite3-dev sqlite3
 
 # requirements for openvas-scanner (and possibly others)
 apt-get install -y libopenvas2 redis-server
+cp /vagrant/config/redis.conf /etc/redis/redis.conf
 
 # requirements for greenbone-security-assistant (and possibly others)
 apt-get install -y zlib1g-dev xsltproc libxml2-dev libxslt1-dev libmicrohttpd-dev=0.9.20-1+deb7u1
