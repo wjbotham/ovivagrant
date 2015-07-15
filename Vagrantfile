@@ -21,14 +21,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :path => "bootstrap/build-openvas-manager.sh"
   config.vm.provision :shell, :path => "bootstrap/build-greenbone-security-assistant.sh"
   config.vm.provision :shell, :path => "bootstrap/build-openvas-cli.sh"
-  config.vm.provision :shell, :path => "bootstrap/feed-archivist.sh", :args => "restore"
   config.vm.provision :shell, :path => "bootstrap/make-certs.sh"
   config.vm.provision :shell, :path => "bootstrap/start-scanner.sh", :run => "always"
   config.vm.provision :shell, :path => "bootstrap/sync.sh"
-  config.vm.provision :shell, :path => "bootstrap/feed-archivist.sh", :args => "save"
   config.vm.provision :shell, :path => "bootstrap/set-up-manager.sh"
   config.vm.provision :shell, :path => "bootstrap/start-manager-and-gsa.sh", :run => "always"
   config.vm.provision :shell, :path => "bootstrap/create-admin-password.sh"
   config.vm.provision :shell, :path => "bootstrap/report.sh", :run => "always"
+  
   config.vm.network "forwarded_port", guest: 443, host: 9392
+
+  GUEST_OPENVAS_DIR = "/usr/local/var/lib/openvas"
+  config.vm.synced_folder "./feeds/NVT", "#{GUEST_OPENVAS_DIR}/plugins", create: true
+  config.vm.synced_folder "./feeds/SCAP", "#{GUEST_OPENVAS_DIR}/scap-data", create: true
 end
