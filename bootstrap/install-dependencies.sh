@@ -12,7 +12,8 @@ cd hiredis
 make && make install
 
 # requirements for openvas-manager (and possibly others)
-apt-get install -y libsqlite3-dev sqlite3
+# haveged is here to create entropy so key generation in this VM is faster and more secure
+apt-get install -y libsqlite3-dev sqlite3 haveged
 
 # requirements for openvas-scanner (and possibly others)
 apt-get install -y libopenvas2 redis-server
