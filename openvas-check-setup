@@ -27,7 +27,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 
 LOG=/tmp/openvas-check-setup.log
-CHECKVERSION=2.3.1
+CHECKVERSION=2.3.3
 
 if [ "$1" = "--server" -o "$2" = "--server" ]
 then
@@ -187,6 +187,7 @@ if [ `echo $VERSION | grep "^$SCANNER_MAJOR\.$SCANNER_MINOR" | wc -l` -ne "1" ]
 then
   log_and_print "ERROR: OpenVAS Scanner too old or too new: $VERSION"
   log_and_print "FIX: Please install OpenVAS Scanner $SCANNER_MAJOR.$SCANNER_MINOR."
+  log_and_print "HINT: Please see the --v6/7/8/9 command line options to check other major versions."
   check_failed
 fi
 echo "" >> $LOG
@@ -200,7 +201,12 @@ CAFILE=`openvassd -s 2>>$LOG | grep ca_file | sed -e "s/^ca_file = //"`
 if [ ! -e $CAFILE ]
 then
   log_and_print "ERROR: No CA certificate file of OpenVAS Scanner found."
-  log_and_print "FIX: Run 'openvas-mkcert'."
+  if [ "$VER" -ge 9 ]
+  then
+    log_and_print "FIX: Run 'openvas-manage-certs -a'."
+  else
+    log_and_print "FIX: Run 'openvas-mkcert'."
+  fi
   check_failed
 fi
 echo "" >> $LOG
@@ -322,6 +328,7 @@ if [ `echo $VERSION | grep "^$MANAGER_MAJOR\.$MANAGER_MINOR" | wc -l` -ne "1" ]
 then
   log_and_print "ERROR: OpenVAS Manager too old or too new: $VERSION"
   log_and_print "FIX: Please install OpenVAS Manager $MANAGER_MAJOR.$MANAGER_MINOR."
+  log_and_print "HINT: Please see the --v6/7/8/9 command line options to check other major versions."
   check_failed
 fi
 echo "" >> $LOG
@@ -334,7 +341,10 @@ CLIENTCERTFILE="$CERTDIR/clientcert.pem"
 if [ ! -e $CLIENTCERTFILE ]
 then
   log_and_print "ERROR: No client certificate file of OpenVAS Manager found."
-  if [ $VER -ge 7 ]
+  if [ $VER -ge 9 ]
+  then
+    log_and_print "FIX: Run 'openvas-manage-certs -a'."
+  elif [ $VER -ge 7 ]
   then
     log_and_print "FIX: Run 'openvas-mkcert-client -n -i'"
   else
@@ -379,29 +389,6 @@ fi
 echo "" >> $LOG
 
 log_and_print "OK: Access rights for the OpenVAS Manager database are correct."
-
-if [ $ADMINISTRATOR_MAJOR = "0" ]
-then
-  echo "Checking if users exist ..." >> $LOG
-  if [ $VER != "7" ]
-  then
-    USERCOUNT=`openvasmd --get-users | sed -e "/^$/d" | wc -l`
-  else
-    USERCOUNT=`openvasmd --list-users | sed -e "/^$/d" | wc -l`
-  fi
-  if [ $USERCOUNT -eq 0 ]
-  then
-    log_and_print "ERROR: No users found. You need to create at least one user to log in."
-    log_and_print "       It is recommended to have at least one user with role Admin."
-    log_and_print "FIX: create a user by running 'openvasmd --create-user=<name> --role=Admin && openvasmd --user=<name> --new-password=<password>'"
-    check_failed
-  else
-    log_and_print "OK: At least one user exists."
-  fi
-  echo "" >> $LOG
-fi
-
-# TODO: Do a check for presence of at least one Admin user.
 
 echo "Checking sqlite3 presence ..." >> $LOG
 SQLITE3=`type sqlite3 2> /dev/null`
@@ -453,7 +440,7 @@ then
     log_and_print "ERROR: The number of NVTs in the OpenVAS Manager database is too low."
     log_and_print "FIX: Make sure OpenVAS Scanner is running with an up-to-date NVT collection and run 'openvasmd --rebuild'."
 
-    OPENVASSD_RUNNING=`ps -Af | grep "openvassd: waiting for incoming connections" | grep -v grep | wc -l`
+    OPENVASSD_RUNNING=`ps -Af | grep "openvassd: [Ww]aiting for incoming connections" | grep -v grep | wc -l`
     if [ $OPENVASSD_RUNNING -eq 0 ]
     then
       log_and_print "WARNING: OpenVAS Scanner is NOT running!" ;
@@ -465,6 +452,29 @@ then
     log_and_print "OK: OpenVAS Manager database contains information about $DBNVTCOUNT NVTs."
   fi
 fi
+
+if [ $ADMINISTRATOR_MAJOR = "0" ]
+then
+  echo "Checking if users exist ..." >> $LOG
+  if [ $VER != "7" ]
+  then
+    USERCOUNT=`openvasmd --get-users | sed -e "/^$/d" | wc -l`
+  else
+    USERCOUNT=`openvasmd --list-users | sed -e "/^$/d" | wc -l`
+  fi
+  if [ $USERCOUNT -eq 0 ]
+  then
+    log_and_print "ERROR: No users found. You need to create at least one user to log in."
+    log_and_print "       It is recommended to have at least one user with role Admin."
+    log_and_print "FIX: create a user by running 'openvasmd --create-user=<name> --role=Admin && openvasmd --user=<name> --new-password=<password>'"
+    check_failed
+  else
+    log_and_print "OK: At least one user exists."
+  fi
+  echo "" >> $LOG
+fi
+
+# TODO: Do a check for presence of at least one Admin user.
 
 echo "Checking OpenVAS SCAP database ..." >> $LOG
 # Guess openvas state dir from $PLUGINSFOLDER
@@ -529,6 +539,7 @@ then
   then
     log_and_print "ERROR: OpenVAS Administrator too old or too new: $VERSION"
     log_and_print "FIX: Please install OpenVAS Administrator $ADMINISTRATOR_MAJOR.$ADMINISTRATOR_MINOR."
+    log_and_print "HINT: Please see the --v6/7/8/9 command line options to check other major versions."
     check_failed
   fi
   echo "" >> $LOG
@@ -600,6 +611,7 @@ if [ `echo $VERSION | grep "^$GSA_MAJOR\.$GSA_MINOR" | wc -l` -ne "1" ]
 then
   log_and_print "ERROR: Greenbone Security Assistant too old or too new: $VERSION"
   log_and_print "FIX: Please install Greenbone Security Assistant $GSA_MAJOR.$GSA_MINOR."
+  log_and_print "HINT: Please see the --v6/7/8/9 command line options to check other major versions."
   check_failed
 fi
 echo "" >> $LOG
@@ -616,6 +628,7 @@ then
   then
     log_and_print "ERROR: No OpenVAS CLI (omp) found."
     log_and_print "FIX: Please install OpenVAS CLI."
+    log_and_print "HINT: Please see the --server command line option to skip this check."
     check_failed
   fi
   echo "" >> $LOG
@@ -626,6 +639,7 @@ then
   then
     log_and_print "ERROR: OpenVAS CLI too old or too new: $VERSION"
     log_and_print "FIX: Please install OpenVAS CLI $CLI_MAJOR.$CLI_MINOR."
+    log_and_print "HINT: Please see the --v6/7/8/9 command line options to check other major versions."
     check_failed
   fi
   echo "" >> $LOG
@@ -666,10 +680,12 @@ then
       then
         log_and_print "ERROR: Greenbone Security Desktop too old or too new: $VERSION"
         log_and_print "FIX: Please install Greenbone Security Desktop $GSD_MAJOR.$GSD_MINOR."
+        log_and_print "HINT: Please see the --v6/7/8/9 command line options to check other major versions."
         check_failed
       else
         log_and_print "WARNING: Greenbone Security Desktop too old or too new: $VERSION"
         log_and_print "SUGGEST: Please install Greenbone Security Desktop $GSD_MAJOR.$GSD_MINOR."
+        log_and_print "HINT: Please see the --v6/7/8/9 command line options to check other major versions."
       fi
     fi
     echo "" >> $LOG
@@ -706,7 +722,7 @@ then
   OPENVASAD_HOST=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep openvasad | awk -F\  '{print $4}' | awk -F: 'sub(FS $NF,x)'`
   OPENVASAD_PORT=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep openvasad | awk -F\  '{print $4}' | awk -F: '{print $NF}'`
   GSAD_HOST=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep gsad | awk -F\  '{print $4}' | awk -F: 'sub(FS $NF,x)'`
-  GSAD_PORT=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep gsad | awk -F\  '{print $4}' | awk -F: '{print $NF}'`
+  GSAD_PORT=`netstat -A inet -A inet6 -ntlp 2> /dev/null | grep gsad | awk -F\  '{print $4}' | awk -F: '{print $NF}' | tail -1`
 
   case "$OPENVASSD_HOST" in
     "0.0.0.0"|"::") log_and_print "OK: OpenVAS Scanner is running and listening on all interfaces." ;;
