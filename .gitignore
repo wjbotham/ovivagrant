@@ -1,3 +1,5 @@
 .vagrant
 downloads/*
 archives/*
+id_rsa*
+*.log
